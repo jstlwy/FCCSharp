@@ -6,14 +6,15 @@ namespace FCCSharp.Models;
 
 public class Exercise
 {
+	// Primary key
 	public int Id { get; set; }
 
 	// Foreign key
-	public int ExerciseUserId { get; set; }
+	public int UserId { get; set; }
 
 	public string Description { get; set; }
 
-	public int Duration { get; set; }
+	public uint Duration { get; set; }
 
 	public DateOnly Date { get; set; }
 }

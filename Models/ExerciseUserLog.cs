@@ -4,12 +4,14 @@ using System.Text.Json.Serialization;
 
 namespace FCCSharp.Models;
 
-public class ExerciseUser
+public class ExerciseUserLog
 {
-	public int Id { get; set; }
-
 	public string Username { get; set; }
 
 	[JsonPropertyName("_id")]
 	public string UserId { get; set; }
+
+	public int Count { get; set; }
+
+	public List<Exercise> Log { get; set; }
 }

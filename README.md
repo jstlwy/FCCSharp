@@ -1,6 +1,8 @@
 # FCCSharp
 An attempt to recreate all of the freeCodeCamp Back End projects in .NET.
 
+Uses an SQL database instead of MongoDB.
+
 The freeCodeCamp Back End projects are as follows:
 1. [Timestamp Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/timestamp-microservice)
 2. [Request Header Parser Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/request-header-parser-microservice)

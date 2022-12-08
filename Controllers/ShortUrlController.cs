@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using FCCSharp.Models;
+using FCCSharp.Data;
+using System.Linq;
 
 namespace FCCSharp.Controllers;
 
@@ -7,9 +9,21 @@ namespace FCCSharp.Controllers;
 [Route("[controller]")]
 public class ShortUrlController : ControllerBase
 {
+	private readonly FCCSharp.Data.ShortUrlDbContext _context;
+
+	public ShortUrlController(FCCSharp.Data.ShortUrlDbContext context)
+	{
+		_context = context;
+	}
+
 	[HttpPost]
 	public async Task<ActionResult> Create([FromForm] string url)
 	{
+		if (url == null)
+		{
+			return BadRequest("No URL was provided.");
+		}
+
 		// Check if the format of the URL is valid
 		if (!System.Uri.IsWellFormedUriString(url, System.UriKind.Absolute))
 		{
@@ -32,20 +46,33 @@ public class ShortUrlController : ControllerBase
 		{
 			OriginalUrl = url
 		};
-		context..Add(newEntry);
+		_context.ShortUrls.Add(newEntry);
+
+		try
+		{
+			_context.SaveChanges();
+		}
+		catch(DbUpdateException e)
+		{
+			Console.WriteLine($"Error when attempting to save to ShortUrl database: {e.Message}");
+			return BadRequest("Error when attempting to save to database.");
+		}
+
 		return Ok(newEntry);
 	}
 
 	[HttpGet("{id}")]
 	public ActionResult Get(string id)
 	{
-		if (true)
-		{
-			return Redirect(originalUrl);
-		}
-		else
-		{
+		string? url = (
+			from entry in _context.ShortUrls
+			where entry.ShortUrl == id
+			select entry.OriginalUrl
+		).FirstOrDefault();
+
+		if (url == null)
 			return NotFound();
-		}
+		
+		return Redirect(url);
 	}
 }
