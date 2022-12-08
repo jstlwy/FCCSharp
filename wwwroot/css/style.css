@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Roboto+Mono&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: #272748;
+  font-family: Lato, sans-serif;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+h1 {
+  font-family: Roboto Mono, monospace;
+}
+
+.main-nav {
+	border-radius: 7px;
+	background-color: #101034;
+	margin: 30px;
+	padding: 30px;
+}
+
+.main-nav li {
+	padding: 10px;
+	list-style-type: none;
+}
+
+.main-nav a {
+  color: white;
+	text-decoration: none;
+}
+
+.main-nav a:hover {
+  color: gray;
+}
+

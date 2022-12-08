@@ -7,25 +7,25 @@ namespace FCCSharp.Controllers;
 public class ExerciseController : ControllerBase
 {
 	[HttpPost("/users")]
-	public URLReceipt CreateUser()
+	public ActionResult CreateUser()
 	{
-
+		
 	}
 
 	[HttpGet("/users")]
-	public GetAll()
+	public IEnumerable<ExerciseUser> GetAll()
 	{
 
 	}
 
 	[HttpPost("/users/{id}/exercises")]
-	public AddExercise(int id)
+	public ActionResult AddExercise(int id)
 	{
 
 	}
 
 	[HttpGet("/users/{id}/logs")]
-	public GetLogs(int id)
+	public IEnumerable<> GetLogs(int id)
 	{
 		
 	}
