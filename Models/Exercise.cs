@@ -15,5 +15,5 @@ public class Exercise
 
 	public int Duration { get; set; }
 
-	public Date Date { get; set; }
+	public DateOnly Date { get; set; }
 }

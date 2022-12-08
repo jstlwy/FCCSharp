@@ -28,7 +28,7 @@ public class ShortUrlController : ControllerBase
 			}
 		}
 
-		ShortUrl newEntry = new ShortUrl()
+		ShortUrlEntry newEntry = new ShortUrlEntry()
 		{
 			OriginalUrl = url
 		};

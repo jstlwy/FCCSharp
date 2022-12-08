@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace FCCSharp.Models;
 
-public class ShortUrl
+public class ShortUrlEntry
 {
-	public ShortUrl()
+	public ShortUrlEntry()
 	{
 		TimesAccessed = 0;
 	}
