@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using FCCSharp.Models;
 using FCCSharp.Data;
-using System.Linq;
 
 namespace FCCSharp.Controllers;
 
@@ -9,9 +9,9 @@ namespace FCCSharp.Controllers;
 [Route("[controller]")]
 public class ExerciseController : ControllerBase
 {
-	private readonly FCCSharp.Data.ExerciseDbContext _context;
+	private readonly ExerciseDbContext _context;
 
-	public ExerciseController(FCCSharp.Data.ExerciseDbContext context)
+	public ExerciseController(ExerciseDbContext context)
 	{
 		_context = context;
 	}
@@ -50,14 +50,15 @@ public class ExerciseController : ControllerBase
 		return _context.Users;
 	}
 
-	[HttpPost("/users/{id}/exercises")]
+	[HttpPost("/users/{uuid}/exercises")]
 	public ActionResult AddExercise(
-		string id,
+		string uuid,
 		[FromForm] string description,
 		[FromForm] string duration,
 		[FromForm] string date)
 	{
-		if (!_context.Users.Any(u => u.UserId == id))
+		ExerciseUser? user = _context.Users.Where(u => u.UserId == uuid).FirstOrDefault();
+		if (user == null)
 			return BadRequest("Invalid user ID.");
 
 		uint exerciseDuration;
@@ -76,7 +77,7 @@ public class ExerciseController : ControllerBase
 
 		Exercise ex = new Exercise
 		{
-			UserId = id,
+			UserId = user.Id,
 			Description = description,
 			Duration = exerciseDuration,
 			Date = exerciseDate
@@ -96,21 +97,20 @@ public class ExerciseController : ControllerBase
 		return Ok();
 	}
 
-	[HttpGet("/users/{id}/logs")]
-	public ExerciseUserLog GetLogs(string id)
+	[HttpGet("/users/{uuid}/logs")]
+	public ActionResult GetLogs(string uuid)
 	{
-		if (id == null)
+		if (String.IsNullOrEmpty(uuid))
 			return NotFound();
 
 		var queryResult = (
 			from user in _context.Users
-			join exercise in _context.Exercises on user.UserId equals exercise.UserId
-			where user.UserId = id
-			select user.Username, exercise
+			join exercise in _context.Exercises on user.Id equals exercise.UserId
+			where user.UserId == uuid
+			select user.Username, exercise.Description, exercise.Duration, exercise.Date
 		);
 
-		// Null propagation alternative: !queryResult?.Any()
-		if (queryResult == null || !queryResult.Any())
+		if (!queryResult?.Any())
 			return NotFound();
 
 		ExerciseUserLog log = new ExerciseUserLog();
@@ -123,6 +123,6 @@ public class ExerciseController : ControllerBase
 		}
 		log.Exercises = exercises;
 
-		return log;
+		return Ok(log);
 	}
 }

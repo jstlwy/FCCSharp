@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace FCCSharp.Models;
@@ -13,5 +11,5 @@ public class ExerciseUserLog
 
 	public int Count { get; set; }
 
-	public List<Exercise> Log { get; set; }
+	public List<Exercise> Exercises { get; set; }
 }

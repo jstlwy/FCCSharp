@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using FCCSharp.Models;
 using FCCSharp.Data;
-using System.Linq;
 
 namespace FCCSharp.Controllers;
 
@@ -9,7 +9,7 @@ namespace FCCSharp.Controllers;
 [Route("[controller]")]
 public class ShortUrlController : ControllerBase
 {
-	private readonly FCCSharp.Data.ShortUrlDbContext _context;
+	private readonly ShortUrlDbContext _context;
 
 	public ShortUrlController(FCCSharp.Data.ShortUrlDbContext context)
 	{
@@ -19,16 +19,12 @@ public class ShortUrlController : ControllerBase
 	[HttpPost]
 	public async Task<ActionResult> Create([FromForm] string url)
 	{
-		if (url == null)
-		{
+		if (String.IsNullOrEmpty(url))
 			return BadRequest("No URL was provided.");
-		}
 
 		// Check if the format of the URL is valid
 		if (!System.Uri.IsWellFormedUriString(url, System.UriKind.Absolute))
-		{
 			return BadRequest("Invalid URL format.");
-		}
 
 		// Check if the web site exists
 		// Based on the following:
@@ -37,9 +33,7 @@ public class ShortUrlController : ControllerBase
 		{
 			HttpResponseMessage response = await client.GetAsync(url);
 			if (!response.IsSuccessStatusCode)
-			{
 				return BadRequest("The web site could not be found.");
-			}
 		}
 
 		ShortUrlEntry newEntry = new ShortUrlEntry()
@@ -70,7 +64,7 @@ public class ShortUrlController : ControllerBase
 			select entry.OriginalUrl
 		).FirstOrDefault();
 
-		if (url == null)
+		if (String.IsNullOrEmpty(url))
 			return NotFound();
 		
 		return Redirect(url);
