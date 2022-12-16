@@ -50,14 +50,14 @@ public class ExerciseController : ControllerBase
 		return _context.Users;
 	}
 
-	[HttpPost("/users/{uuid}/exercises")]
+	[HttpPost("/users/{username}/exercises")]
 	public ActionResult AddExercise(
-		string uuid,
+		string username,
 		[FromForm] string description,
 		[FromForm] string duration,
 		[FromForm] string date)
 	{
-		ExerciseUser? user = _context.Users.Where(u => u.UserId == uuid).FirstOrDefault();
+		ExerciseUser? user = _context.Users.Where(u => u.Username == username).FirstOrDefault();
 		if (user == null)
 			return BadRequest("Invalid user ID.");
 
@@ -97,31 +97,46 @@ public class ExerciseController : ControllerBase
 		return Ok();
 	}
 
-	[HttpGet("/users/{uuid}/logs")]
-	public ActionResult GetLogs(string uuid)
+	[HttpGet("/users/{username}/logs")]
+	public ActionResult GetLogs(string username)
 	{
-		if (String.IsNullOrEmpty(uuid))
+		if (String.IsNullOrEmpty(username))
 			return NotFound();
 
 		var queryResult = (
 			from user in _context.Users
 			join exercise in _context.Exercises on user.Id equals exercise.UserId
-			where user.UserId == uuid
-			select user.Username, exercise.Description, exercise.Duration, exercise.Date
+			where user.Username == username
+			select new
+			{
+				user.Id,
+				user.Username,
+				exercise.Description,
+				exercise.Duration,
+				exercise.Date
+			}
 		);
 
-		if (!queryResult?.Any())
+		if (queryResult == null)
 			return NotFound();
 
 		ExerciseUserLog log = new ExerciseUserLog();
-		log.UserId = id;
+		var firstResult = queryResult.First();
+		log.UserId = firstResult.Id;
 		log.Username = queryResult.First().Username;
-		List<Exercise> exercises = new List<Exercise>();
+		List<ExerciseLog> exercises = new List<ExerciseLog>();
 		foreach (var result in queryResult)
 		{
-			exercises.Add(result.Exercise);
+			ExerciseLog e = new ExerciseLog
+			{
+				Description = result.Description,
+				Duration = result.Duration,
+				Date = result.Date
+			};
+			exercises.Add(e);
 		}
 		log.Exercises = exercises;
+		log.Count = exercises.Count;
 
 		return Ok(log);
 	}

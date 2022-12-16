@@ -51,4 +51,7 @@ app.MapGet("/date", () =>
 });
 app.MapControllers();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.Run();
