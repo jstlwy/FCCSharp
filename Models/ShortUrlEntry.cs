@@ -10,10 +10,10 @@ public class ShortUrlEntry
 	public int Id { get; set; }
 
 	[JsonPropertyName("original_url")]
-	public string OriginalUrl { get; set; }
+	public string OriginalUrl { get; set; } = null!;
 
 	[JsonPropertyName("short_url")]
-	public string ShortUrl { get; set; }
+	public string ShortUrl { get; set; } = null!;
 
 	public int TimesAccessed { get; set; }
 }

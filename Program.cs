@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -29,6 +31,7 @@ app.MapGet("/whoami", (HttpContext context, HttpRequest request) =>
 		clientIP = ci.RemoteIpAddress.ToString();
 	else
 		clientIP = "unknown";
+
 	return Results.Ok(new {
 		ipaddress = clientIP,
 		language = request.Headers.AcceptLanguage.ToString(),

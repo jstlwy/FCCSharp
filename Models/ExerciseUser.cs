@@ -11,5 +11,5 @@ public class ExerciseUser
 
 	[StringLength(254, MinimumLength = 2)]
 	[RegularExpression(@"^[a-zA-Z0-9]+[a-zA-Z0-9_]*$")]
-	public string Username { get; set; }
+	public string Username { get; set; } = null!;
 }

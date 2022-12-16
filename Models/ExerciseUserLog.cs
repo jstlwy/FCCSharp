@@ -4,7 +4,7 @@ namespace FCCSharp.Models;
 
 public class ExerciseUserLog
 {
-	public string Username { get; set; }
+	public string Username { get; set; } = null!;
 
 	[JsonPropertyName("_id")]
 	public int UserId { get; set; }

@@ -11,7 +11,7 @@ public class Exercise
 	// Foreign key
 	public int UserId { get; set; }
 
-	public string Description { get; set; }
+	public string Description { get; set; } = null!;
 
 	public uint Duration { get; set; }
 

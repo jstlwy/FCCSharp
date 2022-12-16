@@ -11,12 +11,12 @@ public class ShortUrlController : ControllerBase
 {
 	private readonly ShortUrlDbContext _context;
 
-	public ShortUrlController(FCCSharp.Data.ShortUrlDbContext context)
+	public ShortUrlController(ShortUrlDbContext context)
 	{
 		_context = context;
 	}
 
-	[HttpPost]
+	[HttpPost("/new")]
 	public async Task<ActionResult> Create([FromForm] string url)
 	{
 		if (String.IsNullOrEmpty(url))
@@ -55,7 +55,7 @@ public class ShortUrlController : ControllerBase
 		return Ok(newEntry);
 	}
 
-	[HttpGet("{id}")]
+	[HttpGet("/go/{id}")]
 	public ActionResult Get(string id)
 	{
 		string? url = (
