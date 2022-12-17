@@ -1,13 +1,22 @@
-using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+//using Microsoft.Extensions.DependencyInjection;
+using FCCSharp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ExerciseDbContext>(options =>
+{
+	options.UseSqlite(builder.Configuration.GetConnectionString("ExerciseDbContext") ?? throw new InvalidOperationException("Connection string 'ExerciseDbContext' not found."));
+});
+builder.Services.AddDbContext<ShortUrlDbContext>(options =>
+{
+	options.UseSqlite(builder.Configuration.GetConnectionString("ShortUrlDbContext") ?? throw new InvalidOperationException("Connection string 'ShortUrlDbContext' not found."));
+});
 
 var app = builder.Build();
 
@@ -19,7 +28,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 // Set up routes and controllers

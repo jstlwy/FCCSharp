@@ -19,6 +19,8 @@ public class ShortUrlController : ControllerBase
 	[HttpPost("/new")]
 	public async Task<ActionResult> Create([FromForm] string url)
 	{
+		//System.Diagnostics.Debug.WriteLine($"User attempting to insert new URL: {url}");
+
 		if (String.IsNullOrEmpty(url))
 			return BadRequest("No URL was provided.");
 
