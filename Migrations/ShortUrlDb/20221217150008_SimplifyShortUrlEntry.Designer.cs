@@ -2,6 +2,7 @@
 using FCCSharp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FCCSharp.Migrations.ShortUrlDb
 {
     [DbContext(typeof(ShortUrlDbContext))]
-    partial class ShortUrlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221217150008_SimplifyShortUrlEntry")]
+    partial class SimplifyShortUrlEntry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");

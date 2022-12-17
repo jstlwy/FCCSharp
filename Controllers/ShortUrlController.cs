@@ -19,8 +19,6 @@ public class ShortUrlController : ControllerBase
 	[HttpPost("new")]
 	public async Task<ActionResult> Create([FromForm] string url)
 	{
-		//System.Diagnostics.Debug.WriteLine($"User attempting to insert new URL: {url}");
-
 		if (String.IsNullOrEmpty(url))
 			return BadRequest("No URL was provided.");
 
@@ -31,14 +29,14 @@ public class ShortUrlController : ControllerBase
 		// Check if the web site exists
 		// Based on the following:
 		// https://www.dotnetperls.com/httpclient
-		using (HttpClient client = new HttpClient())
+		using (HttpClient client = new())
 		{
 			HttpResponseMessage response = await client.GetAsync(url);
 			if (!response.IsSuccessStatusCode)
 				return BadRequest("The web site could not be found.");
 		}
 
-		ShortUrlEntry newEntry = new ShortUrlEntry()
+		ShortUrlEntry newEntry = new()
 		{
 			OriginalUrl = url
 		};
@@ -48,27 +46,36 @@ public class ShortUrlController : ControllerBase
 		{
 			_context.SaveChanges();
 		}
-		catch(DbUpdateException e)
+		catch (DbUpdateException e)
 		{
-			Console.WriteLine($"Error when attempting to save to ShortUrl database: {e.Message}");
-			return BadRequest("Error when attempting to save to database.");
+			Console.WriteLine($"Error when attempting to save {url} to database: {e.Message}");
+			return BadRequest("There was an error when attempting to save your URL to the database. Please try again.");
 		}
 
-		return Ok(newEntry);
+		return Ok(new
+		{
+			original_url = url,
+			short_url = newEntry.Id
+		});
 	}
 
 	[HttpGet("go/{id}")]
-	public ActionResult Get(string id)
+	public ActionResult Get(int id)
 	{
-		string? url = (
-			from entry in _context.ShortUrls
-			where entry.ShortUrl == id
-			select entry.OriginalUrl
-		).FirstOrDefault();
+		var result = _context.ShortUrls.Find(id);
+		if (result == null)
+			return NotFound($"The short URL you provided, {id}, does not exist.");
 
-		if (String.IsNullOrEmpty(url))
-			return NotFound();
-		
-		return Redirect(url);
+		result.TimesAccessed++;
+        try
+        {
+            _context.SaveChanges();
+        }
+        catch (DbUpdateException e)
+        {
+            Console.WriteLine($"Error when attempting to update times accessed for {result.OriginalUrl}: {e.Message}");
+        }
+
+        return Redirect(result.OriginalUrl);
 	}
 }

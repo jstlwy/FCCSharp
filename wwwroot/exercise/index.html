@@ -18,8 +18,8 @@
       </form>
         <form id="exercise-form" method="post">
         <h3>Add exercises</h3>
-        <p><code>POST /exercise/users/:_id/</code></p>
-        <input required id="uid" type="text" name=":_id" placeholder=":_id" />
+        <p><code>POST /exercise/users/&lt;username&gt;/</code></p>
+        <input required id="exuname" type="text" name="username" placeholder="username" />
         <input required id="desc" type="text" name="description" placeholder="description*" />
         <input required id="dur" type="text" name="duration" placeholder="duration* (mins.)" />
         <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
@@ -27,19 +27,16 @@
       </form>
       <p>
         <strong>GET user's exercise log: </strong>
-        <code>GET /exercise/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
+        <code>GET /exercise/users/&lt;username&gt;/logs?[from][&amp;to][&amp;limit]</code>
       </p>
       <p><strong>[ ]</strong> = optional</p>
       <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
     </div>
     <script>
       const exerciseForm = document.getElementById("exercise-form");
-
       exerciseForm.addEventListener("submit", () => {
-        const userId = document.getElementById("uid").value;
-        //exerciseForm.action = `/api/users/${userId}/exercises`;
-        exerciseForm.action = `users/${userId}/`;
-
+        const username = document.getElementById("exuname").value;
+        exerciseForm.action = `users/${username}/exercises`;
         exerciseForm.submit();
       });
     </script>

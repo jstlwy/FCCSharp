@@ -22,7 +22,7 @@ public class ExerciseController : ControllerBase
 		if (username == null)
 			return BadRequest("Username cannot be empty");
 
-		if (!_context.Users.Any(u => u.Username == username))
+		if (_context.Users.Any(u => u.Username == username))
 			return BadRequest("User already exists.");
 
 		ExerciseUser newUser = new ExerciseUser
@@ -37,11 +37,15 @@ public class ExerciseController : ControllerBase
 		}
 		catch (DbUpdateException e)
 		{
-			Console.WriteLine($"Error when attempting to save to database: {e.Message}");
-			return BadRequest("Error when attempting to save to database. Please try again.");
+			Console.WriteLine($"Error when attempting to save username {username} to database: {e.Message}");
+			return BadRequest("There was an error when attempting to save your username to the database. Please try again.");
 		}
 
-		return Ok(newUser);
+		return Ok(new
+		{
+			username,
+			_id = newUser.Id
+		});
 	}
 
 	[HttpGet("users")]
@@ -55,11 +59,11 @@ public class ExerciseController : ControllerBase
 		string username,
 		[FromForm] string description,
 		[FromForm] string duration,
-		[FromForm] string date)
+		[FromForm] string? date)
 	{
-		ExerciseUser? user = _context.Users.Where(u => u.Username == username).FirstOrDefault();
+		var user = _context.Users.First(u => u.Username == username);
 		if (user == null)
-			return BadRequest("Invalid user ID.");
+			return BadRequest($"The username you provided, {username}, could not be found.");
 
 		uint exerciseDuration;
 		try
@@ -72,10 +76,12 @@ public class ExerciseController : ControllerBase
 		}
 
 		DateOnly exerciseDate;
-		if (!DateOnly.TryParseExact(date, "yyyy-MM-dd", out exerciseDate))
+		if (String.IsNullOrEmpty(date))
+			exerciseDate = DateOnly.FromDateTime(DateTime.Now);
+		else if (!DateOnly.TryParseExact(date, "yyyy-MM-dd", out exerciseDate))
 			return BadRequest("Invalid date.");
 
-		Exercise ex = new Exercise
+		Exercise ex = new()
 		{
 			UserId = user.Id,
 			Description = description,
@@ -94,7 +100,14 @@ public class ExerciseController : ControllerBase
 			return BadRequest("Error when attempting to save to database. Please try again.");
 		}
 
-		return Ok();
+		return Ok(new
+		{
+			username,
+			description,
+			duration,
+			date = exerciseDate,
+			_id = user.Id
+		});
 	}
 
 	[HttpGet("users/{username}/logs")]
@@ -117,8 +130,8 @@ public class ExerciseController : ControllerBase
 			}
 		);
 
-		if (queryResult == null)
-			return NotFound();
+		if (queryResult == null || !queryResult.Any())
+			return NotFound($"The username you provided, {username}, could not be found.");
 
 		ExerciseUserLog log = new ExerciseUserLog();
 		var firstResult = queryResult.First();
