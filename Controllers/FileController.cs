@@ -6,10 +6,10 @@ namespace FCCSharp.Controllers;
 [Route("[controller]")]
 public class FileController : ControllerBase
 {
-    [HttpPost("/analyze")]
+    [HttpPost("analyze")]
     public ActionResult OnPostUpload(IFormFile upfile)
     {
-        if (upfile.Length <= 0)
+        if (upfile.Length <= 0) 
             return BadRequest("The file you uploaded was empty.");
 
         return Ok(new {

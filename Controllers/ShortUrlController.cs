@@ -16,7 +16,7 @@ public class ShortUrlController : ControllerBase
 		_context = context;
 	}
 
-	[HttpPost("/new")]
+	[HttpPost("new")]
 	public async Task<ActionResult> Create([FromForm] string url)
 	{
 		//System.Diagnostics.Debug.WriteLine($"User attempting to insert new URL: {url}");
@@ -57,7 +57,7 @@ public class ShortUrlController : ControllerBase
 		return Ok(newEntry);
 	}
 
-	[HttpGet("/go/{id}")]
+	[HttpGet("go/{id}")]
 	public ActionResult Get(string id)
 	{
 		string? url = (

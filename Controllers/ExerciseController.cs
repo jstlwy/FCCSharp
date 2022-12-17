@@ -16,7 +16,7 @@ public class ExerciseController : ControllerBase
 		_context = context;
 	}
 
-	[HttpPost("/users")]
+	[HttpPost("users")]
 	public ActionResult CreateUser([FromForm] string username)
 	{
 		if (username == null)
@@ -44,13 +44,13 @@ public class ExerciseController : ControllerBase
 		return Ok(newUser);
 	}
 
-	[HttpGet("/users")]
+	[HttpGet("users")]
 	public IEnumerable<ExerciseUser> GetAll()
 	{
 		return _context.Users;
 	}
 
-	[HttpPost("/users/{username}/exercises")]
+	[HttpPost("users/{username}/exercises")]
 	public ActionResult AddExercise(
 		string username,
 		[FromForm] string description,
@@ -97,7 +97,7 @@ public class ExerciseController : ControllerBase
 		return Ok();
 	}
 
-	[HttpGet("/users/{username}/logs")]
+	[HttpGet("users/{username}/logs")]
 	public ActionResult GetLogs(string username)
 	{
 		if (String.IsNullOrEmpty(username))
